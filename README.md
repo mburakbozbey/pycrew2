@@ -19,10 +19,11 @@
 
 ### Dataset Description
 - **Dataset Size:** 88 GB Training, (80%) & 22 GB Testing (20%) and ~10 GB Validation. Distribution of classes:
+- Multiclass dataset:
+<img src="https://github.com/mburakbozbey/pycrew2/blob/master/MultDist.jpg" alt="img">
 
-<p align="center"> 
- <img src="https://i.ibb.co/r5fhNpt/train.jpg" width="325"> <img src="https://i.ibb.co/HK7RvD1/Screenshot-1.jpgg" width="325">
-</p>
+- Multilabel dataset:
+<img src="https://github.com/mburakbozbey/pycrew2/blob/master/MLabelDist.jpg" alt="img">
 
 - **Dataset Shape:** 180.800 training, 45.200 testing & 20.000 validation samples
 
