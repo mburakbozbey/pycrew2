@@ -111,11 +111,11 @@ def reverse_right():
 
 ## Reload weights & model structure:
 
-with open(r'C:\Users\mbura\Desktop\crewModels\\logs\nvidiaMult\nvidiaMult.json','r') as f:
+with open(r'C:\Users\mbura\Desktop\logs\nvidiaMult\nvidiaMult.json','r') as f:
     model_json = json.load(f)
 
 model = model_from_json(model_json)
-model.load_weights(r'C:\Users\mbura\Desktop\pycrew2\logs\nvidiaMult\ep030-loss0.254-val_loss0.235.h5')
+model.load_weights(r'C:\Users\mbura\Desktop\logs\nvidiaMult\ep030-loss0.254-val_loss0.235.h5')
 print('Model loaded.')
 
 
@@ -142,7 +142,7 @@ def main():
             roi = grab_screen(region = (y1, x1, y2, x2))
             roi = cv2.resize(roi, (WIDTH, HEIGHT))
             roi = cv2.cvtColor(roi, cv2.COLOR_BGRA2RGB)
-
+            
             last_time = time.time()
             roi = preprocess_input(roi)
             delta_count_last = motion_detection(np.asarray(t_minus, np.uint8), np.asarray(t_plus, np.uint8))
@@ -154,34 +154,36 @@ def main():
 
             prediction = model.predict([roi.reshape(-1, roi.shape[0], roi.shape[1], roi.shape[2])])[0]
             prediction = np.rint(prediction)
-            mode_choice = map_labels[tuple(prediction)]
+            try:
+                mode_choice = map_labels[tuple(prediction)]
+                choice_picked = "null"
+            except:
+                if mode_choice == 6:
+                    straight()
+                    choice_picked = 'straight'
 
-            if mode_choice == 6:
-                straight()
-                choice_picked = 'straight'
+                elif mode_choice == 3:
+                    reverse()
+                    choice_picked = 'reverse'
 
-            elif mode_choice == 3:
-                reverse()
-                choice_picked = 'reverse'
-
-            elif mode_choice == 0:
-                left()
-                choice_picked = 'left'
-            elif mode_choice == 1:
-                right()
-                choice_picked = 'right'
-            elif mode_choice == 7:
-                forward_left()
-                choice_picked = 'forward+left'
-            elif mode_choice == 8:
-                forward_right()
-                choice_picked = 'forward+right'
-            elif mode_choice == 4:
-                reverse_left()
-                choice_picked = 'reverse+left'
-            elif mode_choice == 5:
-                reverse_right()
-                choice_picked = 'reverse+right'
+                elif mode_choice == 0:
+                    left()
+                    choice_picked = 'left'
+                elif mode_choice == 1:
+                    right()
+                    choice_picked = 'right'
+                elif mode_choice == 7:
+                    forward_left()
+                    choice_picked = 'forward+left'
+                elif mode_choice == 8:
+                    forward_right()
+                    choice_picked = 'forward+right'
+                elif mode_choice == 4:
+                    reverse_left()
+                    choice_picked = 'reverse+left'
+                elif mode_choice == 5:
+                    reverse_right()
+                    choice_picked = 'reverse+right'
 
             motion_log.append(delta_count_last)
             motion_avg = round(mean(motion_log),3)
