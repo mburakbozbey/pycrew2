@@ -1,6 +1,6 @@
 # A Deep Neural Network Plays Crew 2
  <p align="center"> 
-    <img src="https://github.com/mburakbozbey/pycrew2/blob/master/giphy.gif" alt="img">
+    <img src="https://media.giphy.com/media/PlTbiHfR0RXaC4RoPQ/giphy.gif" alt="img">
  </p>
  
 - Adapted and inspired by <a href="https://github.com/Sentdex/pygta5" target="_blank">sentdex</a>’s <a href="https://www.youtube.com/watch?v=ks4MPfMq8aQ&list=PLQVvvaa0QuDeETZEOy4VdocT7TOjfSA8a" target="_blank">Python Plays GTA V </a>series.
