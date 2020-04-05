@@ -47,7 +47,7 @@ map_labels = {  tuple([1,0,0,0]) : 6,
                 tuple([1,0,0,1]) : 8,
                 tuple([0,1,1,0]) : 4,
                 tuple([0,1,0,1]) : 5,
-                tuple([0,0,0,0]) : 3 ## noKey is mapped to brake
+                tuple([0,0,0,0]) : 2
             }
 
 def straight():
@@ -108,7 +108,17 @@ def reverse_right():
     PressKey(D)
     ReleaseKey(W)
     ReleaseKey(A)
+    
+def no_keys():
 
+    if random.randrange(0,3) == 1:
+        PressKey(W)
+    else:
+        ReleaseKey(W)
+    ReleaseKey(A)
+    ReleaseKey(S)
+    ReleaseKey(D)
+    
 ## Reload weights & model structure:
 
 with open(r'C:\Users\mbura\Desktop\logs\nvidiaMult\nvidiaMult.json','r') as f:
@@ -121,43 +131,28 @@ print('Model loaded.')
 
 
 def main():
-    last_time = time.time()
+
     for i in list(range(4))[::-1]:
         print(i+1)
         time.sleep(1)
 
     paused = False
 
-    roi = grab_screen(region=(y1, x1, y2, x2))
-    roi = cv2.resize(roi, (WIDTH, HEIGHT))
-    prev = cv2.cvtColor(roi, cv2.COLOR_BGRA2RGB)
-
-    t_minus = prev
-    t_now = prev
-    t_plus = prev
-
     while(True):
         
         if not paused:
             roi = grab_screen(region = (y1, x1, y2, x2))
             roi = cv2.resize(roi, (WIDTH, HEIGHT))
-            roi = cv2.cvtColor(roi, cv2.COLOR_BGRA2RGB)
+            roi = cv2.cvtColor(roi, cv2.COLOR_BGRA2RGB)/255
             
             last_time = time.time()
-            roi = preprocess_input(roi)
-            delta_count_last = motion_detection(np.asarray(t_minus, np.uint8), np.asarray(t_plus, np.uint8))
-
-            t_minus = t_now
-            t_now = t_plus
-            t_plus = roi
-            t_plus = cv2.blur(t_plus,(4,4))
 
             prediction = model.predict([roi.reshape(-1, roi.shape[0], roi.shape[1], roi.shape[2])])[0]
-            prediction = np.rint(prediction)
+            prediction = np.array(prediction > 0.5).astype(int)
+            
             try:
                 mode_choice = map_labels[tuple(prediction)]
-                choice_picked = "null"
-            except:
+                
                 if mode_choice == 6:
                     straight()
                     choice_picked = 'straight'
@@ -184,48 +179,15 @@ def main():
                 elif mode_choice == 5:
                     reverse_right()
                     choice_picked = 'reverse+right'
+                elif mode_choice == 2:
+                    no_keys()
+                    choice_picked = 'nokeys'
+            except:
+                choice_picked = "null"
+                print(prediction)
 
-            motion_log.append(delta_count_last)
-            motion_avg = round(mean(motion_log),3)
-            print('loop took {} seconds. Motion: {}. Choice: {}'.format( round(time.time()-last_time, 3) , motion_avg, choice_picked))
+            print('loop took {} seconds. Choice: {}'.format( round(time.time()-last_time, 3) , choice_picked))
             
-            if motion_avg < motion_req and len(motion_log) >= log_len:
-                print('WERE PROBABLY STUCK FFS, initiating some evasive maneuvers.')
-
-                # 0 = reverse straight, turn left out
-                # 1 = reverse straight, turn right out
-                # 2 = reverse left, turn right out
-                # 3 = reverse right, turn left out
-
-                quick_choice = random.randrange(0,4)
-                
-                if quick_choice == 0:
-                    reverse()
-                    time.sleep(random.uniform(1,2))
-                    forward_left()
-                    time.sleep(random.uniform(1,2))
-
-                elif quick_choice == 1:
-                    reverse()
-                    time.sleep(random.uniform(1,2))
-                    forward_right()
-                    time.sleep(random.uniform(1,2))
-
-                elif quick_choice == 2:
-                    reverse_left()
-                    time.sleep(random.uniform(1,2))
-                    forward_right()
-                    time.sleep(random.uniform(1,2))
-
-                elif quick_choice == 3:
-                    reverse_right()
-                    time.sleep(random.uniform(1,2))
-                    forward_left()
-                    time.sleep(random.uniform(1,2))
-
-                for i in range(log_len-2):
-                    del motion_log[0]
-    
         keys = key_check()
 
         # p pauses game and can get annoying.
