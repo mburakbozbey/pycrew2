@@ -5,6 +5,8 @@
  
 - Adapted and inspired by <a href="https://github.com/Sentdex/pygta5" target="_blank">sentdex</a>’s <a href="https://www.youtube.com/watch?v=ks4MPfMq8aQ&list=PLQVvvaa0QuDeETZEOy4VdocT7TOjfSA8a" target="_blank">Python Plays GTA V </a>series.
 
+- Demo: <a href="https://www.youtube.com/watch?v=TwDKfqLf6aI" target="_blank">`Second version`</a>
+
 ### Objective
 
 - Crew 2 is a open world racing game which has a relatively big map which takes approximately 1 hour to drive across. In this project, a deep neural network model is trained to drive as fast as possible by learning from front camera of the vehicle and pressed keys while playing.
@@ -30,7 +32,7 @@
 ### Demo Videos
 
 <a href="https://www.youtube.com/watch?v=1Ho4b1gUS7Y" target="_blank">`First version`</a>
-
+<a href="https://www.youtube.com/watch?v=TwDKfqLf6aI" target="_blank">`Second version`</a>
 ##### Training Details:
 - **Dataset:** 40 GB Training (80%) & Testing (20%) and 10 GB Validation.
 - **Model Architecture:** DenseNet121 with fine-tuning on ImageNet weights.
